@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Burn-in App
+Comment=Open the Seti Burn-in apllication
+Exec=chromium-browser --start-fullscreen http://localhost
+Icon=/home/setitech/Documents/StationSoft/seti_logo.png
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
+Terminal=false;
