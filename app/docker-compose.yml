@@ -1,0 +1,107 @@
+version : '3.8'
+services:
+  station-ui:
+    image: aelmendorf234/station-ui:dev
+    container_name: station-ui
+    pull_policy: always
+    expose:
+      - 8080
+    ports:
+      - "80:8080"
+    restart: unless-stopped
+    volumes:
+      - web_data:/app/
+    environment:
+      - StationHub=http://station-service:8080/hubs/station
+      - MsgEndpoint=station-service
+      - MONGO_CONNECTION_STRING=mongodb://mongodb:27017
+    depends_on:
+      - station-service
+    links:
+      - "station-service"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      station_net:
+        ipv4_address: 10.5.0.10
+  station-service:
+    image: aelmendorf234/station-service:dev
+    container_name: station-service
+    pull_policy: always
+    privileged: true
+    restart: unless-stopped
+    user: "root"
+    entrypoint: ["ash", "-c", "/scripts/entry-point.sh"]
+    environment:
+      - StationId=S01
+      - MONGO_CONNECTION_STRING=mongodb://192.168.68.111:27017
+    expose:
+      - 8080
+    ports:
+      - "5000:8080"
+    volumes:
+      - /home/setitech/Documents/StationSoft/StationService/app:/scripts
+      - /home/setitech/Documents/StationSoft/StationService/app/updates:/updates
+      - /dev:/dev
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      station_net:
+        ipv4_address: 10.5.0.11
+  qt-api:
+    image: aelmendorf234/quick-test-api:dev
+    container_name: qt.api
+    pull_policy: always
+    expose:
+      - 8080
+    ports:
+      - "6000:8080"
+    restart: unless-stopped
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://mongodb:27017
+    depends_on:
+      - mongodb
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    networks:
+      station_net:
+        ipv4_address: 10.5.0.13
+  mongodb:
+    image: mongodb-raspberrypi4-unofficial-r7.0.4
+    container_name: mongodb
+    pull_policy: never
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - /home/setitech/StationSoft/mongo/db:/data/db
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --cleanup --http-api-update
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+    environment:
+      - WATCHTOWER_HTTP_API_TOKEN=station-soft-token
+    ports:
+      - 8080:8080
+    networks:
+      station_net:
+        ipv4_address: 10.5.0.12
+networks:
+  station_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
+volumes:
+  web_data:
+    driver: local # Define the driver and options under the volume name
+    driver_opts:
+      type: none
+      device: /home/setitech/Documents/StationSoft/app/ui/
+      o: bind

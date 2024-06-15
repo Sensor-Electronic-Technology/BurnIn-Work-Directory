@@ -1,0 +1,5 @@
+#Remove all stopped containers
+docker rm $(docker ps --filter status=exited -q)
+
+#Start compose-no watch
+docker-compose up -d
