@@ -1,0 +1,4 @@
+git commit -m "create commit"
+git add --all
+git commit -m "create commit"
+git branch -M main
