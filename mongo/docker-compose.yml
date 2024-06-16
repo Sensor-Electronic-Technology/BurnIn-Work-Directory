@@ -1,40 +1,13 @@
-version: "3"
+version : '3.8'
 services:
-  mongo_01:
+  mongodb:
     image: mongodb-raspberrypi4-unofficial-r7.0.4
-    container_name: mongo1
+    container_name: mongodb
     pull_policy: never
     restart: unless-stopped
-    command: mongod --replSet rs0 --bind_ip '192.168.68.111:27017',mongo1
+    ports:
+      - "27017:27017"
+    volumes:
+      - /home/setitech/StationSoft/mongo/db:/data/db
     labels:
       - "com.centurylinklabs.watchtower.enable=false"
-    ports:
-        - "27017:27017"
-    volumes:
-      - /home/setiburnin/StationSoft/mongo/db:/data/db
-  mongo_02:
-    image: mongodb-raspberrypi4-unofficial-r7.0.4
-    container_name: mongo2
-    pull_policy: never
-    restart: unless-stopped
-    command: mongod --replSet rs0 --bind_ip '192.168.68.111:27018',mongo2
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
-    ports:
-        - "27018:27017"
-    volumes:
-      - /home/setiburnin/StationSoft/mongo/db:/data/db01
-  mongo_03:
-    image: mongodb-raspberrypi4-unofficial-r7.0.4
-    container_name: mongo3
-    pull_policy: never
-    restart: unless-stopped
-    command: mongod --replSet rs0 --bind_ip '192.168.68.111:27019',mongo3
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
-    ports:
-        - "27019:27017"
-    depends_on:
-      - mongo_01
-    volumes:
-      - /home/setitech/mongo/db:/data/db

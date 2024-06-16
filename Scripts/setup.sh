@@ -18,7 +18,7 @@ echo "Copying desktop shortcut"
 cp seti-burnin.desktop ~/Desktop/seti-burnin.desktop
 sudo chmod a+x ~/Desktop/seti-burnin.desktop
 
-sudo chmod a+x get-docker.sh
-./get-docker.sh
+# sudo chmod a+x get-docker.sh
+# ./get-docker.sh
 
 
